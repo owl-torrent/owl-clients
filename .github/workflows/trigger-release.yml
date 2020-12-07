@@ -7,7 +7,7 @@ on:
         definition: The tag to create, if not provided current version will be incremented
 
 jobs:
-  lint:
+  tag:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
