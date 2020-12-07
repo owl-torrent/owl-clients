@@ -3,7 +3,8 @@ name: trigger release
 on:
   workflow_dispatch:
     inputs:
-      tag: 
+      tag:
+        definition: The tag to create, if not provided current version will be incremented
 
 jobs:
   lint:
