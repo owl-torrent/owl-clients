@@ -10,10 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: git tag
+    - name: identify tag
+      id: tagprovider
       run: |
         TAG=${{ github.event.inputs.tag }}
         if [ -z "$TAG" ]; then TAG=$(git describe --abbrev=0 --tags) && TAG=$(echo $TAG | awk -F '[.]' '/./ {print $1"."$2"."$3+1}')1; fi
         if [ -z "$TAG" ]; then echo "tag is empty"; exit 1; fi 
-        echo $TAG
+        echo "::set-output name=tag::$TAG"
+    - name: Commit tagger
+      uses: tvdias/github-tagger@v0.0.2
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ steps.tagprovider.outputs.tag }}
+      
   
