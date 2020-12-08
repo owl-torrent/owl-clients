@@ -12,7 +12,7 @@ jobs:
       - name: Get version
         id: get_version
         run: |
-          tagname=$(echo ${{ github.ref }} | awk -F '/' '{print $3})
+          tagname=${{ github.ref }} | awk -F '/' '{print $3}
           echo ::set-output name=TAGNAME::tagname'
       - uses: actions/checkout@v2
       - name: Create asset
