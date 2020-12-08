@@ -12,15 +12,25 @@ jobs:
       - uses: actions/checkout@v2
       - name: create asset
         run: |
-          REPOSITORY_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $1}')
-          echo ${{ github.ref	}} > .version
-          tar --transform 's/.*\///g' -zcvf $REPOSITORY_NAME.tar.gz clients/**/*.yml .version
-          cat .version
-          tar -tvf $REPOSITORY_NAME.tar.gz
-          exit 1
-      - name: Run a one-line script
-        run: echo Hello, world!
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          echo ${{ github.ref	}} | awk -F '/' '{print $3}' > .version
+          tar --transform 's/.*\///g' -zcvf clients.tar.gz clients/**/*.yml .version
+          tar -tvf clients.tar.gz
+      - name: Create a Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./clients.tar.gz
+          asset_name: $(echo '${{ github.repository }}' | awk -F '/' '{print $1}')
+          asset_content_type: application/gzip
