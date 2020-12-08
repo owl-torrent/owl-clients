@@ -1,0 +1,26 @@
+name: Release
+
+on:  
+  push:
+    tags:
+      - '*'
+
+jobs:
+  asset:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: create asset
+        run: |
+          REPOSITORY_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $1}')
+          echo ${{ github.ref	}} > .version
+          tar --transform 's/.*\///g' -zcvf $REPOSITORY_NAME.tar.gz clients/**/*.yml .version
+          cat .version
+          tar -tvf $REPOSITORY_NAME.tar.gz
+          exit 1
+      - name: Run a one-line script
+        run: echo Hello, world!
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
