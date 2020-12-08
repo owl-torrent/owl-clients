@@ -9,11 +9,6 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Get version
-        id: get_version
-        run: |
-          tagname=${{ github.ref }} | awk -F '/' '{print $3}
-          echo ::set-output name=TAGNAME::tagname'
       - uses: actions/checkout@v2
       - name: Create asset
         run: |
