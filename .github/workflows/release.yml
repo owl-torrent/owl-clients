@@ -6,7 +6,7 @@ on:
       - '*'
 
 jobs:
-  asset:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Get version
